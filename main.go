@@ -16,7 +16,8 @@ func main() {
 
 	api := r.Group("/api")
 
-	routes.UserRouter(api)
+	routes.UserRoutes(api)
+	routes.AuthRoutes(api)
 
 	addressString := fmt.Sprintf("localhost:%v", config.ENV.PORT)
 	r.Run(addressString)
