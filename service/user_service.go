@@ -11,8 +11,8 @@ type userService struct {
 
 type UserService interface {
 	GetUserByEmail(email string) (*model.User, error)
+	GetUserByUsername(username string) (*model.User, error)
 }
-
 
 func NewUserService(r repository.UserRepository) *userService {
 	return &userService{
@@ -23,4 +23,6 @@ func NewUserService(r repository.UserRepository) *userService {
 func (s *userService) GetUserByEmail(email string) (*model.User, error) {
 	return s.repo.GetUserByEmail(email)
 }
-
+func (s *userService) GetUserByUsername(username string) (*model.User, error) {
+	return s.repo.GetUserByEmail(username)
+}
