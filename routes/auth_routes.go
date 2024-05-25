@@ -15,4 +15,5 @@ func AuthRoutes(r *gin.RouterGroup) {
 
 
 	r.POST("/login", handler.Login)
+	r.POST("/register", handler.Register)
 }
