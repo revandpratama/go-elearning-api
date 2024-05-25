@@ -26,12 +26,12 @@ func (a *authAPI) Login(g *gin.Context) {
 		return
 	}
 
-	tokenString, err := a.service.Login(&LoginRequest); 
+	tokenString, err := a.service.Login(&LoginRequest)
 	if err != nil {
 		errorhandler.HandleError(g, &errorhandler.InternalServerError{Message: err.Error()})
 		return
 	}
-	
+
 	res := helper.Response(dto.ResponseParams{
 		StatusCode: http.StatusOK,
 		Message:    "login success",
@@ -39,4 +39,24 @@ func (a *authAPI) Login(g *gin.Context) {
 	})
 
 	g.JSON(http.StatusOK, res)
+}
+
+func (a *authAPI) Register(g *gin.Context) {
+	var RegisterRequest dto.RegisterRequest
+	if err := g.ShouldBindJSON(&RegisterRequest); err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+
+	if err := a.service.Register(&RegisterRequest); err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+
+	res := helper.Response(dto.ResponseParams{
+		StatusCode: http.StatusCreated,
+		Message:    "register success",
+	})
+
+	g.JSON(http.StatusCreated, res)
 }

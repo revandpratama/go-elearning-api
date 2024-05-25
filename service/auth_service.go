@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/revandpratama/go-elearning-api/dto"
+	"github.com/revandpratama/go-elearning-api/errorhandler"
 	"github.com/revandpratama/go-elearning-api/helper"
 	"github.com/revandpratama/go-elearning-api/model"
 	"github.com/revandpratama/go-elearning-api/repository"
@@ -15,6 +16,7 @@ type authService struct {
 
 type AuthService interface {
 	Login(LoginRequest *dto.LoginRequest) (*string, error)
+	Register(RegisterRequest *dto.RegisterRequest) error
 }
 
 func NewAuthService(r repository.UserRepository) *authService {
@@ -49,4 +51,31 @@ func (s *authService) Login(LoginRequest *dto.LoginRequest) (*string, error) {
 	}
 
 	return token, nil
+}
+
+func (s *authService) Register(RegisterRequest *dto.RegisterRequest) error {
+
+	if RegisterRequest.Password != RegisterRequest.PasswordConfirm {
+		return &errorhandler.BadRequestError{Message: "password comfirmation not match"}
+	}
+
+	HashedPassword, err := helper.HashPassword(RegisterRequest.Password)
+	if err != nil {
+		return err
+	}
+
+	user := model.User{
+		Role:     RegisterRequest.Role,
+		Name:     RegisterRequest.Name,
+		Username: RegisterRequest.Username,
+		Email:    RegisterRequest.Email,
+		Phone:    RegisterRequest.Phone,
+		Password: HashedPassword,
+	}
+
+	if err := s.repository.Create(&user); err != nil {
+		return err
+	}
+
+	return nil
 }
