@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/revandpratama/go-elearning-api/api"
 	"github.com/revandpratama/go-elearning-api/config"
+	"github.com/revandpratama/go-elearning-api/middleware"
 	"github.com/revandpratama/go-elearning-api/repository"
 	"github.com/revandpratama/go-elearning-api/service"
 )
@@ -15,6 +16,8 @@ func KRSRoutes(r *gin.RouterGroup) {
 
 	// r.Use(middleware.Auth())
 	krs := r.Group("/krs")
+
+	krs.Use(middleware.Auth())
 
 	krs.GET("/", handler.GetAll)
 	krs.GET("/:id", handler.GetById)
