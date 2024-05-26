@@ -38,6 +38,8 @@ func (a *authAPI) Login(g *gin.Context) {
 		Data:       tokenString,
 	})
 
+	g.SetCookie("auth_token", *tokenString, 100, "/", "localhost", false, true)
+
 	g.JSON(http.StatusOK, res)
 }
 
