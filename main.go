@@ -18,6 +18,7 @@ func main() {
 
 	routes.UserRoutes(api)
 	routes.AuthRoutes(api)
+	routes.KRSRoutes(api)
 
 	addressString := fmt.Sprintf("localhost:%v", config.ENV.PORT)
 	r.Run(addressString)
