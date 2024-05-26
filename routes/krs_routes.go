@@ -19,7 +19,7 @@ func KRSRoutes(r *gin.RouterGroup) {
 
 	krs.Use(middleware.Auth())
 
-	krs.GET("/", handler.GetAll)
+	krs.GET("/", middleware.IsAdmin(), handler.GetAll)
 	krs.GET("/:id", handler.GetById)
 	krs.POST("/", handler.Create)
 	krs.PUT(":id", handler.Update)
