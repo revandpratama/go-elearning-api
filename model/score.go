@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type Model struct {
+type Score struct {
 	ID        int
 	KrsID     int
 	Score     int
