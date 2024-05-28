@@ -11,7 +11,7 @@ type scoreRepository struct {
 
 type ScoreRepository interface {
 	Create(krs *model.Score) error
-	Update(id int, krs *model.Score) error
+	Update(id int, score *model.Score) error
 	Delete(id int) error
 	GetAll() (*[]model.Score, error)
 	GetById(id int) (*model.Score, error)
