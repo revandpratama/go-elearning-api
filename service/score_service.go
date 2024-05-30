@@ -27,6 +27,7 @@ func NewScoreService(r repository.ScoreRepository) *scoreService {
 func (s *scoreService) Create(req *dto.ScoreRequest) error {
 
 	score := model.Score{
+		UserID: req.UserID,
 		KrsID: req.KrsID,
 		Score: req.Score,
 	}
