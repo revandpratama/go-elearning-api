@@ -26,8 +26,8 @@ func (a *userAPI) GetKRS(g *gin.Context) {
 		return
 	}
 
-	if err := a.service.UserAuthorized(g, id); err != nil {
-		errorhandler.HandleError(g, err)
+	if err := helper.UserAuthorized(g, id); err != nil {
+		errorhandler.HandleError(g, &errorhandler.UnauthorizedError{Message: "unauthorized request"})
 		return
 	}
 
@@ -52,8 +52,8 @@ func (a *userAPI) GetScore(g *gin.Context) {
 		return
 	}
 
-	if err := a.service.UserAuthorized(g, id); err != nil {
-		errorhandler.HandleError(g, err)
+	if err := helper.UserAuthorized(g, id); err != nil {
+		errorhandler.HandleError(g, &errorhandler.UnauthorizedError{Message: "unauthorized request"})
 		return
 	}
 
