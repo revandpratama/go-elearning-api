@@ -62,3 +62,15 @@ func (a *authAPI) Register(g *gin.Context) {
 
 	g.JSON(http.StatusCreated, res)
 }
+
+func (a *authAPI) Logout(g *gin.Context) {
+	
+	g.SetCookie("auth_token", "", -1, "/", "localhost", false, true)
+
+	res := helper.Response(dto.ResponseParams{
+		StatusCode: http.StatusOK,
+		Message:    "logout success",
+	})
+
+	g.JSON(http.StatusOK, res)
+}
