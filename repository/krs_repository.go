@@ -15,6 +15,7 @@ type KRSRepository interface {
 	Delete(id int) error
 	GetAll() (*[]model.KRS, error)
 	GetById(id int) (*model.KRS, error)
+	GetByUserID(id int) (*[]model.KRS, error)
 }
 
 func NewKRSRepository(db *gorm.DB) *krsRepository {
@@ -47,5 +48,11 @@ func (r *krsRepository) GetAll() (*[]model.KRS, error) {
 func (r *krsRepository) GetById(id int) (*model.KRS, error) {
 	var krs model.KRS
 	err := r.db.Where("id = ?", id).First(&krs).Error
+	return &krs, err
+}
+
+func (r *krsRepository) GetByUserID(id int) (*[]model.KRS, error) {
+	var krs []model.KRS
+	err := r.db.Find(&krs, "user_id = ?", id).Error
 	return &krs, err
 }
