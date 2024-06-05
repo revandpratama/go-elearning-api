@@ -15,6 +15,7 @@ type ScoreRepository interface {
 	Delete(id int) error
 	GetAll() (*[]model.Score, error)
 	GetById(id int) (*model.Score, error)
+	GetByUserID(userid int) (*[]model.Score, error)
 }
 
 func NewScoreRepository(db *gorm.DB) *scoreRepository {
@@ -47,5 +48,11 @@ func (r *scoreRepository) GetAll() (*[]model.Score, error) {
 func (r *scoreRepository) GetById(id int) (*model.Score, error) {
 	var score model.Score
 	err := r.db.Where("id = ?", id).First(&score).Error
+	return &score, err
+}
+
+func (r *scoreRepository) GetByUserID(userid int) (*[]model.Score, error) {
+	var score []model.Score
+	err := r.db.Find(&score, "user_id", userid).Error
 	return &score, err
 }
