@@ -14,7 +14,7 @@ func ScoreRoutes(r *gin.RouterGroup) {
 	service := service.NewScoreService(repo)
 	handler := api.NewScoreAPI(service)
 
-	score := r.Group("/score")
+	score := r.Group("/scores")
 
 	score.Use(middleware.Auth())
 
