@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/revandpratama/go-elearning-api/model"
 	"gorm.io/gorm"
 )
@@ -52,7 +54,10 @@ func (r *scoreRepository) GetById(id int) (*model.Score, error) {
 }
 
 func (r *scoreRepository) GetByUserID(userid int) (*[]model.Score, error) {
-	var score []model.Score
-	err := r.db.Find(&score, "user_id", userid).Error
-	return &score, err
+	var scores []model.Score
+	err := r.db.Find(&scores, "user_id", userid).Error
+	if len(scores) < 1 {
+		return nil, errors.New("record not found")
+	}
+	return &scores, err
 }

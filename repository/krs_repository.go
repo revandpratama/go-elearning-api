@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/revandpratama/go-elearning-api/model"
 	"gorm.io/gorm"
 )
@@ -54,5 +56,8 @@ func (r *krsRepository) GetById(id int) (*model.KRS, error) {
 func (r *krsRepository) GetByUserID(id int) (*[]model.KRS, error) {
 	var krs []model.KRS
 	err := r.db.Find(&krs, "user_id = ?", id).Error
+	if len(krs) < 1 {
+		return nil, errors.New("record not found")
+	}
 	return &krs, err
 }
