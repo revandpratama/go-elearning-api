@@ -14,13 +14,19 @@ func ScoreRoutes(r *gin.RouterGroup) {
 	service := service.NewScoreService(repo)
 	handler := api.NewScoreAPI(service)
 
+	//user path
 	score := r.Group("/scores")
-
 	score.Use(middleware.Auth())
 
-	score.GET("/", middleware.IsAdmin(), handler.GetAll)
 	score.GET("/:id", handler.GetById)
-	score.POST("/", middleware.IsAdmin(), handler.Create)
-	score.PUT(":id", middleware.IsAdmin(), handler.Update)
-	score.DELETE(":id", middleware.IsAdmin(), handler.Delete)
+
+
+	// Admin only path
+	scoreAdmin := score.Group("/")
+	scoreAdmin.Use(middleware.IsAdmin())
+
+	scoreAdmin.GET("/", handler.GetAll)
+	scoreAdmin.POST("/", handler.Create)
+	scoreAdmin.PUT(":id", handler.Update)
+	scoreAdmin.DELETE(":id", handler.Delete)
 }
