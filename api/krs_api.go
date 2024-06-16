@@ -87,8 +87,31 @@ func (a *krsAPI) Delete(g *gin.Context) {
 	g.JSON(http.StatusOK, res)
 }
 func (a *krsAPI) GetAll(g *gin.Context) {
+	page := g.Query("page")
+	if page == "" {
+		page = "1"
+	}
+	currentPage, err := strconv.Atoi(page)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
 
-	krs, err := a.service.GetAll()
+	perPageString := g.Query("perPage")
+	if perPageString == "" {
+		perPageString= "10"
+	}
+	perPage, err := strconv.Atoi(perPageString)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+	var pagination = dto.Paginate{
+		CurrentPage: currentPage,
+		DataPerPage: perPage,
+	}
+
+	krs, err := a.service.GetAll(&pagination)
 	if err != nil {
 		errorhandler.HandleError(g, &errorhandler.NotFoundError{Message: err.Error()})
 		return
