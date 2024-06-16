@@ -7,8 +7,9 @@ type ScoreRequest struct {
 }
 
 type ScoreResponse struct {
-	ID     int `json:"id"`
-	UserID int `json:"user_id"`
-	KrsID  int `json:"krs_id"`
-	Score  int `json:"score"`
+	ID         int      `json:"id"`
+	UserID     int      `json:"user_id"`
+	KrsID      int      `json:"krs_id"`
+	Score      int      `json:"score"`
+	Pagination Paginate `json:"pagination"`
 }
