@@ -120,10 +120,15 @@ func (a *scoreAPI) GetAll(g *gin.Context) {
 		return
 	}
 
+	data := map[string]any{
+		"score":score,
+		"pagination": pagination,
+	}
+
 	res := helper.Response(dto.ResponseParams{
 		StatusCode: http.StatusOK,
 		Message:    "score retrieved successfully",
-		Data:       score,
+		Data:       data,
 	})
 
 	g.JSON(http.StatusOK, res)

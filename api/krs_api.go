@@ -117,10 +117,16 @@ func (a *krsAPI) GetAll(g *gin.Context) {
 		return
 	}
 
+	data := map[string]any{
+		"krs": krs,
+		"pagination": pagination,
+	}
+
+
 	res := helper.Response(dto.ResponseParams{
 		StatusCode: http.StatusOK,
 		Message:    "krs retrieved successfully",
-		Data:       krs,
+		Data:       data,
 	})
 
 	g.JSON(http.StatusOK, res)
