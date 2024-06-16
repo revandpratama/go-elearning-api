@@ -17,7 +17,7 @@ type ScoreService interface {
 	Update(id int, req *dto.ScoreRequest) error
 	Delete(id int) error
 	GetAll(pagination *dto.Paginate) (*[]dto.ScoreResponse, error)
-	GetById(id int) (*model.Score, error)
+	GetById(id int) (*dto.ScoreResponse, error)
 }
 
 func NewScoreService(r repository.ScoreRepository) *scoreService {
@@ -89,6 +89,14 @@ func (s *scoreService) GetAll(pagination *dto.Paginate) (*[]dto.ScoreResponse, e
 	return &response, err
 }
 
-func (s *scoreService) GetById(id int) (*model.Score, error) {
-	return s.repository.GetById(id)
+func (s *scoreService) GetById(id int) (*dto.ScoreResponse, error) {
+	score, err := s.repository.GetById(id)
+	response := dto.ScoreResponse{
+		ID:         score.ID,
+		UserID:     score.UserID,
+		KrsID:      score.KrsID,
+		Score:      score.Score,
+	}
+
+	return &response, err
 }

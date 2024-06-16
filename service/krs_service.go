@@ -17,7 +17,7 @@ type KRSService interface {
 	Update(id int, req *dto.KRSRequest) error
 	Delete(id int) error
 	GetAll(pagination *dto.Paginate) (*[]dto.KRSResponse, error)
-	GetById(id int) (*model.KRS, error)
+	GetById(id int) (*dto.KRSResponse, error)
 }
 
 func NewKRSService(r repository.KRSRepository) *krsService {
@@ -89,6 +89,15 @@ func (s *krsService) GetAll(pagination *dto.Paginate) (*[]dto.KRSResponse, error
 	return &response, err
 }
 
-func (s *krsService) GetById(id int) (*model.KRS, error) {
-	return s.repository.GetById(id)
+func (s *krsService) GetById(id int) (*dto.KRSResponse, error) {
+	krs, err := s.repository.GetById(id)
+
+	response := dto.KRSResponse{
+		ID:         krs.ID,
+		UserID:     krs.UserID,
+		SubjectID:  krs.SubjectID,
+		Status:     krs.Status,
+	}
+
+	return &response, err
 }
