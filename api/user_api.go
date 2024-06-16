@@ -31,16 +31,45 @@ func (a *userAPI) GetKRS(g *gin.Context) {
 		return
 	}
 
-	krs, err := a.service.GetKRSByUserID(id)
+	page := g.Query("page")
+	if page == "" {
+		page = "1"
+	}
+	currentPage, err := strconv.Atoi(page)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+
+	perPageString := g.Query("perPage")
+	if perPageString == "" {
+		perPageString = "10"
+	}
+	perPage, err := strconv.Atoi(perPageString)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+	var pagination = dto.Paginate{
+		CurrentPage: currentPage,
+		DataPerPage: perPage,
+	}
+
+	krs, err := a.service.GetKRSByUserID(id, &pagination)
 	if err != nil {
 		errorhandler.HandleError(g, &errorhandler.NotFoundError{Message: err.Error()})
 		return
 	}
 
+	data := map[string]any{
+		"krs":        krs,
+		"pagination": pagination,
+	}
+
 	res := helper.Response(dto.ResponseParams{
 		StatusCode: http.StatusOK,
 		Message:    "krs by user",
-		Data:       krs,
+		Data:       data,
 	})
 
 	g.JSON(http.StatusOK, res)
@@ -57,16 +86,45 @@ func (a *userAPI) GetScore(g *gin.Context) {
 		return
 	}
 
-	score, err := a.service.GetScoreByUserID(id)
+	page := g.Query("page")
+	if page == "" {
+		page = "1"
+	}
+	currentPage, err := strconv.Atoi(page)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+
+	perPageString := g.Query("perPage")
+	if perPageString == "" {
+		perPageString = "10"
+	}
+	perPage, err := strconv.Atoi(perPageString)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+	var pagination = dto.Paginate{
+		CurrentPage: currentPage,
+		DataPerPage: perPage,
+	}
+
+	score, err := a.service.GetScoreByUserID(id, &pagination)
 	if err != nil {
 		errorhandler.HandleError(g, &errorhandler.NotFoundError{Message: err.Error()})
 		return
 	}
 
+	data := map[string]any{
+		"score":      score,
+		"pagination": pagination,
+	}
+
 	res := helper.Response(dto.ResponseParams{
 		StatusCode: http.StatusOK,
 		Message:    "success retrieve score by user",
-		Data:       score,
+		Data:       data,
 	})
 
 	g.JSON(http.StatusOK, res)
