@@ -18,8 +18,9 @@ type ScoreRepository interface {
 	Delete(id int) error
 	GetAll(paginate *dto.Paginate) (*[]model.Score, error)
 	GetById(id int) (*model.Score, error)
-	GetByUserID(userid int) (*[]model.Score, error)
+	GetByUserID(userid int, pagination *dto.Paginate) (*[]model.Score, error)
 	GetTotalData() (int64, error)
+	GetTotalDataByUserId(userid int) (int64, error)
 }
 
 func NewScoreRepository(db *gorm.DB) *scoreRepository {
@@ -66,11 +67,17 @@ func (r *scoreRepository) GetById(id int) (*model.Score, error) {
 	return &score, err
 }
 
-func (r *scoreRepository) GetByUserID(userid int) (*[]model.Score, error) {
+func (r *scoreRepository) GetByUserID(userid int, paginate *dto.Paginate) (*[]model.Score, error) {
 	var scores []model.Score
-	err := r.db.Find(&scores, "user_id", userid).Error
+	err := r.db.Offset((paginate.CurrentPage - 1) * 10).Limit(paginate.DataPerPage).Find(&scores, "user_id", userid).Error
 	if len(scores) < 1 {
 		return nil, errors.New("record not found")
 	}
 	return &scores, err
+}
+
+func (r *scoreRepository) GetTotalDataByUserId(userid int) (int64, error) {
+	var count int64
+	err := r.db.Model(&model.Score{}).Where("user_id = ?", userid).Count(&count).Error
+	return count, err
 }

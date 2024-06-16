@@ -18,8 +18,9 @@ type KRSRepository interface {
 	Delete(id int) error
 	GetAll(paginate *dto.Paginate) (*[]model.KRS, error)
 	GetById(id int) (*model.KRS, error)
-	GetByUserID(id int) (*[]model.KRS, error)
+	GetByUserID(userid int, paginate *dto.Paginate) (*[]model.KRS, error)
 	GetTotalData() (int64, error)
+	GetTotalDataByUserId(userid int) (int64, error)
 }
 
 func NewKRSRepository(db *gorm.DB) *krsRepository {
@@ -65,11 +66,17 @@ func (r *krsRepository) GetById(id int) (*model.KRS, error) {
 	return &krs, err
 }
 
-func (r *krsRepository) GetByUserID(id int) (*[]model.KRS, error) {
+func (r *krsRepository) GetByUserID(userid int, paginate *dto.Paginate) (*[]model.KRS, error) {
 	var krs []model.KRS
-	err := r.db.Find(&krs, "user_id = ?", id).Error
+	err := r.db.Offset((paginate.CurrentPage - 1) * 10).Limit(paginate.DataPerPage).Find(&krs, "user_id", userid).Error
 	if len(krs) < 1 {
 		return nil, errors.New("record not found")
 	}
 	return &krs, err
+}
+
+func (r *krsRepository) GetTotalDataByUserId(userid int) (int64, error) {
+	var count int64
+	err := r.db.Model(&model.KRS{}).Where("user_id = ?", userid).Count(&count).Error
+	return count, err
 }
