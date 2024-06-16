@@ -1,6 +1,8 @@
 package service
 
 import (
+	"math"
+
 	"github.com/revandpratama/go-elearning-api/dto"
 	"github.com/revandpratama/go-elearning-api/model"
 	"github.com/revandpratama/go-elearning-api/repository"
@@ -14,7 +16,7 @@ type KRSService interface {
 	Create(req *dto.KRSRequest) error
 	Update(id int, req *dto.KRSRequest) error
 	Delete(id int) error
-	GetAll() (*[]model.KRS, error)
+	GetAll(pagination *dto.Paginate) (*[]dto.KRSResponse, error)
 	GetById(id int) (*model.KRS, error)
 }
 
@@ -57,10 +59,35 @@ func (s *krsService) Delete(id int) error {
 
 	return err
 }
-func (s *krsService) GetAll() (*[]model.KRS, error) {
-	krs, err := s.repository.GetAll()
+func (s *krsService) GetAll(pagination *dto.Paginate) (*[]dto.KRSResponse, error) {
+	krs, err := s.repository.GetAll(pagination)
+	if err != nil {
+		return nil, err
+	}
+	totalData, err := s.repository.GetTotalData()
+	if err != nil {
+		return nil, err
+	}
+	
+	pagination.TotalData = int(totalData)
+	totalPages := math.Ceil(float64(pagination.TotalData) / float64(pagination.DataPerPage))
+	pagination.TotalPages = int(totalPages)
 
-	return krs, err
+	var response []dto.KRSResponse
+
+	for _, v := range *krs {
+		r := dto.KRSResponse{
+			ID:         v.ID,
+			UserID:     v.UserID,
+			SubjectID:  v.SubjectID,
+			Status:     v.Status,
+			Pagination: *pagination,
+		}
+
+		response = append(response, r)
+	}
+
+	return &response, err
 }
 
 func (s *krsService) GetById(id int) (*model.KRS, error) {
