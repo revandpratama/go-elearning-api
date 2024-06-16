@@ -7,8 +7,9 @@ type KRSRequest struct {
 }
 
 type KRSResponse struct {
-	ID        int    `json:"id"`
-	UserID    int    `json:"user_id"`
-	SubjectID int    `json:"subject_id"`
-	Status    string `json:"status"`
+	ID         int      `json:"id"`
+	UserID     int      `json:"user_id"`
+	SubjectID  int      `json:"subject_id"`
+	Status     string   `json:"status"`
+	Pagination Paginate `json:"pagination"`
 }
