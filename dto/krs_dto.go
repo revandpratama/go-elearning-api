@@ -11,5 +11,5 @@ type KRSResponse struct {
 	UserID     int      `json:"user_id"`
 	SubjectID  int      `json:"subject_id"`
 	Status     string   `json:"status"`
-	Pagination Paginate `json:"pagination"`
+	// Pagination Paginate `json:"pagination"`
 }

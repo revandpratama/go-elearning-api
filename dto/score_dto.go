@@ -11,5 +11,5 @@ type ScoreResponse struct {
 	UserID     int      `json:"user_id"`
 	KrsID      int      `json:"krs_id"`
 	Score      int      `json:"score"`
-	Pagination Paginate `json:"pagination"`
+	// Pagination Paginate `json:"pagination"`
 }
