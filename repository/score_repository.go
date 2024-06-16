@@ -19,6 +19,7 @@ type ScoreRepository interface {
 	GetAll(paginate *dto.Paginate) (*[]model.Score, error)
 	GetById(id int) (*model.Score, error)
 	GetByUserID(userid int) (*[]model.Score, error)
+	GetTotalData() (int64, error)
 }
 
 func NewScoreRepository(db *gorm.DB) *scoreRepository {
@@ -51,6 +52,12 @@ func (r *scoreRepository) GetAll(paginate *dto.Paginate) (*[]model.Score, error)
 	// err := r.db.Find(&score).Error
 
 	return &scores, err
+}
+
+func (r *scoreRepository) GetTotalData() (int64, error) {
+	var count int64
+	err := r.db.Model(&model.Score{}).Count(&count).Error
+	return count, err
 }
 
 func (r *scoreRepository) GetById(id int) (*model.Score, error) {
