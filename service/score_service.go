@@ -1,6 +1,8 @@
 package service
 
 import (
+	"math"
+
 	"github.com/revandpratama/go-elearning-api/dto"
 	"github.com/revandpratama/go-elearning-api/model"
 	"github.com/revandpratama/go-elearning-api/repository"
@@ -58,14 +60,26 @@ func (s *scoreService) Delete(id int) error {
 }
 func (s *scoreService) GetAll(pagination *dto.Paginate) (*[]dto.ScoreResponse, error) {
 	score, err := s.repository.GetAll(pagination)
+	if err != nil {
+		return nil, err
+	}
 
+	totalData, err := s.repository.GetTotalData()
+	if err != nil {
+		return nil, err
+	}
+
+	pagination.TotalData = int(totalData)
+	totalPages := math.Ceil(float64(pagination.TotalData) / float64(pagination.DataPerPage))
+	pagination.TotalPages = int(totalPages)
+	
 	var response []dto.ScoreResponse
 	for _, v := range *score {
 		s := dto.ScoreResponse{
-			ID:     v.ID,
-			UserID: v.UserID,
-			KrsID: v.KrsID,
-			Score: v.Score,
+			ID:         v.ID,
+			UserID:     v.UserID,
+			KrsID:      v.KrsID,
+			Score:      v.Score,
 			Pagination: *pagination,
 		}
 
