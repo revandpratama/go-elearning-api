@@ -14,7 +14,7 @@ type ScoreService interface {
 	Create(req *dto.ScoreRequest) error
 	Update(id int, req *dto.ScoreRequest) error
 	Delete(id int) error
-	GetAll() (*[]model.Score, error)
+	GetAll(pagination *dto.Paginate) (*[]dto.ScoreResponse, error)
 	GetById(id int) (*model.Score, error)
 }
 
@@ -28,8 +28,8 @@ func (s *scoreService) Create(req *dto.ScoreRequest) error {
 
 	score := model.Score{
 		UserID: req.UserID,
-		KrsID: req.KrsID,
-		Score: req.Score,
+		KrsID:  req.KrsID,
+		Score:  req.Score,
 	}
 
 	if err := s.repository.Create(&score); err != nil {
@@ -56,10 +56,24 @@ func (s *scoreService) Delete(id int) error {
 
 	return err
 }
-func (s *scoreService) GetAll() (*[]model.Score, error) {
-	krs, err := s.repository.GetAll()
+func (s *scoreService) GetAll(pagination *dto.Paginate) (*[]dto.ScoreResponse, error) {
+	score, err := s.repository.GetAll(pagination)
 
-	return krs, err
+	var response []dto.ScoreResponse
+	for _, v := range *score {
+		s := dto.ScoreResponse{
+			ID:     v.ID,
+			UserID: v.UserID,
+			KrsID: v.KrsID,
+			Score: v.Score,
+			Pagination: *pagination,
+		}
+
+		response = append(response, s)
+
+	}
+
+	return &response, err
 }
 
 func (s *scoreService) GetById(id int) (*model.Score, error) {
