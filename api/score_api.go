@@ -90,8 +90,31 @@ func (a *scoreAPI) Delete(g *gin.Context) {
 }
 
 func (a *scoreAPI) GetAll(g *gin.Context) {
+	page := g.Query("page")
+	if page == "" {
+		page = "1"
+	}
+	currentPage, err := strconv.Atoi(page)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
 
-	score, err := a.service.GetAll()
+	perPageString := g.Query("perPage")
+	if perPageString == "" {
+		perPageString= "10"
+	}
+	perPage, err := strconv.Atoi(perPageString)
+	if err != nil {
+		errorhandler.HandleError(g, &errorhandler.BadRequestError{Message: err.Error()})
+		return
+	}
+	var pagination = dto.Paginate{
+		CurrentPage: currentPage,
+		DataPerPage: perPage,
+	}
+
+	score, err := a.service.GetAll(&pagination)
 	if err != nil {
 		errorhandler.HandleError(g, &errorhandler.NotFoundError{Message: err.Error()})
 		return
