@@ -68,7 +68,7 @@ func (s *krsService) GetAll(pagination *dto.Paginate) (*[]dto.KRSResponse, error
 	if err != nil {
 		return nil, err
 	}
-	
+
 	pagination.TotalData = int(totalData)
 	totalPages := math.Ceil(float64(pagination.TotalData) / float64(pagination.DataPerPage))
 	pagination.TotalPages = int(totalPages)
@@ -81,7 +81,6 @@ func (s *krsService) GetAll(pagination *dto.Paginate) (*[]dto.KRSResponse, error
 			UserID:     v.UserID,
 			SubjectID:  v.SubjectID,
 			Status:     v.Status,
-			Pagination: *pagination,
 		}
 
 		response = append(response, r)

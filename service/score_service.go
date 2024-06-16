@@ -72,7 +72,7 @@ func (s *scoreService) GetAll(pagination *dto.Paginate) (*[]dto.ScoreResponse, e
 	pagination.TotalData = int(totalData)
 	totalPages := math.Ceil(float64(pagination.TotalData) / float64(pagination.DataPerPage))
 	pagination.TotalPages = int(totalPages)
-	
+
 	var response []dto.ScoreResponse
 	for _, v := range *score {
 		s := dto.ScoreResponse{
@@ -80,7 +80,6 @@ func (s *scoreService) GetAll(pagination *dto.Paginate) (*[]dto.ScoreResponse, e
 			UserID:     v.UserID,
 			KrsID:      v.KrsID,
 			Score:      v.Score,
-			Pagination: *pagination,
 		}
 
 		response = append(response, s)
