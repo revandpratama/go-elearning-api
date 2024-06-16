@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 
+	"github.com/revandpratama/go-elearning-api/dto"
 	"github.com/revandpratama/go-elearning-api/model"
 	"gorm.io/gorm"
 )
@@ -15,9 +16,10 @@ type KRSRepository interface {
 	Create(krs *model.KRS) error
 	Update(id int, krs *model.KRS) error
 	Delete(id int) error
-	GetAll() (*[]model.KRS, error)
+	GetAll(paginate *dto.Paginate) (*[]model.KRS, error)
 	GetById(id int) (*model.KRS, error)
 	GetByUserID(id int) (*[]model.KRS, error)
+	GetTotalData() (int64, error)
 }
 
 func NewKRSRepository(db *gorm.DB) *krsRepository {
@@ -41,10 +43,20 @@ func (r *krsRepository) Delete(id int) error {
 	return err
 }
 
-func (r *krsRepository) GetAll() (*[]model.KRS, error) {
+func (r *krsRepository) GetAll(paginate *dto.Paginate) (*[]model.KRS, error) {
 	var krs []model.KRS
-	err := r.db.Find(&krs).Error
+	err := r.db.Offset((paginate.CurrentPage - 1) * 10).Limit(paginate.DataPerPage).Find(&krs).Error
+	if len(krs) < 1 {
+		return nil, errors.New("record not found")
+	}
+
 	return &krs, err
+}
+
+func (r *krsRepository) GetTotalData() (int64, error) {
+	var count int64
+	err := r.db.Model(&model.KRS{}).Count(&count).Error
+	return count, err
 }
 
 func (r *krsRepository) GetById(id int) (*model.KRS, error) {
